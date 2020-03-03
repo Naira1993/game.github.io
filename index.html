@@ -24,13 +24,17 @@
             border-radius: 20px;
         }
 
-        .option {
-            height: 150px;
-            width: 150px;
+        #option0,
+        #option1,
+        #option2,
+        #option3 {
+            height: 30%;
+            width: 40%;
             background-color: pink;
             position: absolute;
             font-size: 90px;
             border-radius: 20px;
+            cursor: pointer;
         }
 
         button {
@@ -40,6 +44,13 @@
             display: none;
             margin: 0 auto;
             font-weight: bolder;
+        }
+
+        #option4 {
+            width: 90%;
+            position: absolute;
+            top: 39%;
+            font-size: 350%;
         }
     </style>
 </head>
@@ -52,20 +63,20 @@
     <script>
         let great = document.querySelector('#great'),
             button = document.querySelector('button'),
-            arr = [], score = 0;
+            arr = [], options = [],  score = 0;
+
         button.addEventListener('click', newGame, false);
         for (let i = 0; i < 5; i++) {
             let d = document.querySelector('#great'),
                 n = document.createElement('div');
             d.appendChild(n);
             n.className = 'option';
+            n.id = `option${i}`;
             arr.push(n);
         };
         arr[1].style.right = 0;
         arr[2].style.bottom = 0;
         arr[3].style.right = arr[3].style.bottom = 0;
-        arr[4].style.left = '25%'; arr[4].style.top = '35%';
-        arr[4].style.width = '60%';
         arr[4].style.backgroundColor = '#ddd';
         for (let i = 0; i < 4; i++) {
             arr[i].addEventListener('click', check, false)
@@ -96,6 +107,7 @@
                 let j = random(0, arr1.length - 1);
                 arr[i].textContent = arr1[j];
                 arr1.splice(j, 1);
+                options = [...arr]
             }
             right = answer;
             document.querySelector('h3').innerHTML = `Your score: ${score}`;
@@ -104,11 +116,19 @@
         function check() {
             if (this.textContent == right) {
                 score += 10;
+                this.style.backgroundColor = ' rgb(128, 197, 24, .8)'
             } else {
                 score -= 10;
+                this.style.backgroundColor = 'red';
+                let i = options.findIndex(c => c.textContent === right);
+                arr[i].style.backgroundColor = ' rgb(128, 197, 24, .8)'
             };
             if (score >= 0) {
-                choose();
+                setTimeout(() => {
+                    choose();
+                    arr.map(c => c.id !== 'option4' ? c.style.backgroundColor = 'pink' : null)
+                }, 1000)
+
             } else {
                 document.querySelector('#great').style.display = document.querySelector('h3').style.display = 'none';
                 document.body.style.backgroundImage = "url(img/sad.png)";
@@ -116,6 +136,8 @@
                 document.querySelector('h1').style.marginTop = '330px';
                 button.style.display = 'block';
             }
+
+
         }
         function newGame() {
             location.reload();
